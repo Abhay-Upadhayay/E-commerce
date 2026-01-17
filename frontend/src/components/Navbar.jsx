@@ -34,7 +34,7 @@ export const Navbar = () => {
                <button 
             className=' bg-blue-500 px-3 py-1 rounded-lg cursor-pointer text-white'
             onClick={()=>{
-                navigate("/login")
+                navigate("/createProduct")
             }}>Create product</button>
             }
 

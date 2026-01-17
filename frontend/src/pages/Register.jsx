@@ -12,6 +12,7 @@ export const Register = () => {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
 
+    const [error, setError] = useState("")
     
     
     const handleSubmit = (e)=>{
@@ -31,9 +32,7 @@ export const Register = () => {
             navigate("/")
         })
         .catch((error)=>{
-            console.log(error);
-
-            
+            setError(error.response.data.message);
         })
 
     }
@@ -124,6 +123,12 @@ export const Register = () => {
             <br />
 
             <p>Already have an account? <Link to={"/login"} className='text-blue-500' >Login Here</Link></p>
+
+            <br />
+
+            {
+                error && <p className=' text-red-500' >{error}</p>
+            }
         </form>
     </div>
   )

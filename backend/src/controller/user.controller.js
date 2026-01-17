@@ -50,3 +50,41 @@ module.exports.postRegisterController = async (req,res)=>{
         res.status(500).json({message : "Internal server error" , error : error.message})
     }
 }
+
+module.exports.loginContoller = async (req,res) => {
+    try {
+        const {email , password} = req.body;
+
+        if(!email){
+            res.status(400).json({message : "Email is required"});
+        }
+        if(!password){
+            res.status(400).json({message : "Password is required"});
+        }
+
+        const user = await userModel.findOne({email});
+
+        if(!user){
+            res.status(400).json({message : "Incorrect credentials"});
+        }
+        
+        let isMatch = await bcrypt.compare(password , user.password);
+        
+        if(!isMatch){
+            res.status(400).json({message : "Incorrect credentials"});
+        }
+
+        let token = jwt.sign({
+            id : user._id,
+            email : user.email
+        },config.JWT_SECRET);
+
+        let role = user.role;
+
+        res.status(200).json({message : `${user.role} login successful` , token , role})
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message : "Internal server error" , error : error.message})
+    }
+}
