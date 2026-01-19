@@ -29,58 +29,56 @@ export const Login = () => {
       })
     }
   return (
-    <div className='w-full h-screen flex justify-center items-center bg-blue-100'>
+    <div className='w-full min-h-screen flex justify-center items-center bg-blue-100 p-4'>
+      <form onSubmit={handleForm} className='border bg-white flex flex-col p-5 sm:p-6 md:p-7 rounded-2xl w-full max-w-md'>
+        <h1 className='text-3xl font-bold text-center font-mono text-blue-500'>LOGIN</h1>
+        <br />
 
-        <form onSubmit={handleForm}  className=' border bg-white flex flex-col p-5 rounded-2xl'>
-            <h1 className=' text-3xl font-bold text-center font-mono text-blue-500'>LOGIN</h1>
-            <br />
-            <br />
-            <label htmlFor="email" 
-            className=' text-lg font-medium'
-            >Email :</label>
-            <br />
-            <input 
-            value={email}
-            onChange={(e)=>{
-              setEmail(e.target.value);
-            }}
-            type="email" 
-            id='email' 
-            placeholder='xyz@gmail.com'
-            className=' w-100 h-8 border rounded-lg px-1 text-lg focus:outline-none'/>
-            <br />
+        {/* Email */}
+        <label htmlFor="email" className='text-lg font-medium'>Email :</label>
+        <input 
+          value={email}
+          onChange={(e)=> setEmail(e.target.value)}
+          type="email" 
+          id='email' 
+          placeholder='xyz@gmail.com'
+          className='w-full h-10 border rounded-lg px-2 text-lg focus:outline-none mt-1'
+        />
+        <br />
 
-            <label htmlFor="password"
-            className=' text-lg font-medium'
-            >Password :</label>
-            <br />
-            <input 
-            value={password}
-            onChange={(e)=>{
-              setPassword(e.target.value);
-            }}
-            type="password" 
-            id='password'
-            placeholder='*******'
-            className=' w-100 h-8 border rounded-lg px-1 text-lg focus:outline-none'/>
+        {/* Password */}
+        <label htmlFor="password" className='text-lg font-medium'>Password :</label>
+        <input 
+          value={password}
+          onChange={(e)=> setPassword(e.target.value)}
+          type="password" 
+          id='password'
+          placeholder='*******'
+          className='w-full h-10 border rounded-lg px-2 text-lg focus:outline-none mt-1'
+        />
+        <br />
 
-            <br />
-        
-            <div className=' flex justify-center items-center'>
-                <button 
-                type='submit'
-                className=' bg-blue-500 text-white text-xl font-medium font-sans px-3 py-1 rounded-2xl'
-                >Submit</button>
-            </div>
+        {/* Submit Button */}
+        <div className='flex justify-center items-center mt-4'>
+          <button 
+            type='submit'
+            className='bg-blue-500 text-white text-lg sm:text-xl font-medium px-4 py-2 sm:px-6 sm:py-2 rounded-2xl w-full sm:w-auto'
+          >
+            Submit
+          </button>
+        </div>
+        <br />
 
-            <br />
+        {/* Register Link */}
+        <p className='text-center text-sm sm:text-base'>
+          Don't have an account? <Link to={"/register"} className='text-blue-500'>Register Here</Link>
+        </p>
+        <br />
 
-            <p>Don't have an account? <Link to={"/register"} className='text-blue-500' >Register Here</Link></p>
-            <br />
-            {
-              error && <p className=' text-red-500' >{error}</p>
-            }
-        </form>
+        {/* Error */}
+        {error && <p className='text-red-500 text-center'>{error}</p>}
+      </form>
     </div>
+
   )
 }
