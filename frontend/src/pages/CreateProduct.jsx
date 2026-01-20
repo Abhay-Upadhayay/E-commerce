@@ -1,17 +1,24 @@
 import React from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'
+import config from '../config/config'
 
 export const CreateProduct = () => {
     const navigate = useNavigate();
-    const [productImages, setProductImages] = useState([]);
+    const [images, setImages] = useState([]);
     const [title, setTitle] = useState("");
     const [discription, setDiscription] = useState("");
-    const [price, setPrice] = useState(0);
+    const [price, setPrice] = useState(-1);
     const [category, setCategory] = useState("General");
     const [forWhom, setForWhom] = useState("Everyone");
     const [ind, setind] = useState(0);
+    const [error, setError] = useState("")
+    
 
+
+
+    let token = localStorage.getItem("token");
     const maxImages = 10;
     const handleImages = (e)=>{
         const files = Array.from(e.target.files);
@@ -21,13 +28,13 @@ export const CreateProduct = () => {
             return;
         }
 
-        setProductImages(files);
+        setImages(files);
 
         e.target.value = null;
     }
 
     const removeImage = (index)=>{
-        setProductImages((prev) => {
+        setImages((prev) => {
         const newImages = prev.filter((_, i) => i !== index);
 
     
@@ -44,13 +51,68 @@ export const CreateProduct = () => {
             document.getElementById("images").value = null;
         }
     }
+
+    const handleForm = (e)=>{
+        e.preventDefault();
+
+        const formdata = new FormData();
+
+        images.forEach((img)=>{
+            formdata.append("images",img);
+        })
+
+
+        formdata.append("title", title);
+        formdata.append("discription" , discription);
+        formdata.append("price", price);
+        formdata.append("category" , category);
+        formdata.append("forWhom" , forWhom);
+
+
+        axios
+        .post(`${config.BASE_API}/product/createProduct`,
+                formdata, 
+                {
+                    headers  : {
+                        "Content-Type": "multipart/form-data", 
+                        authorization : token
+                    }
+                }
+            )
+        .then((res)=>{
+            
+            localStorage.setItem("toast", res.data.message);
+
+
+
+            setCategory("General")
+            setDiscription("")
+            setForWhom("forWhom")
+            setImages([])
+            setPrice(0)
+            setTitle("")
+            setind(0)
+            document.getElementById("images").value = null;
+
+            navigate("/");
+            
+        })
+        .catch((error)=>{
+            setError(error.response.data.message);
+        })
+
+    }
+
+    
     
   return (
     <div className='w-full min-h-screen flex justify-center items-center bg-blue-100 p-4'>
-        <form className='border bg-white flex flex-col p-4 md:p-6 rounded-2xl w-full max-w-6xl'>
+        <form onSubmit={handleForm} className='border bg-white flex flex-col p-4 md:p-6 rounded-2xl w-full max-w-6xl'>
             <h1 className='text-3xl font-bold text-center font-mono text-blue-500'>CREATE PRODUCT</h1>
+            {
+                error && <p id='error' className='text-red-500 text-center text-xl' >{error}</p> 
+            }
             
-
            <div className='flex flex-col md:flex-row justify-between gap-5'>
              {/* Left Column - Images */}
              <div className='flex-1'>
@@ -60,18 +122,18 @@ export const CreateProduct = () => {
                     <input
                     type="file" accept='image/*' id="images" name='images' multiple className='hidden'
                     onChange={handleImages}/>
-                    <p className='text-sm mt-1'>{productImages.length}/{maxImages} are selected.</p>
+                    <p className='text-sm mt-1'>{images.length}/{maxImages} are selected.</p>
                 </div>
                 <br />
                 <div className='preview border w-full h-64 md:h-80 lg:h-96 flex flex-col justify-center items-center'>
-                    {(productImages.length === 0) && <p>Image Preview</p>}
-                   {productImages.length > 0 && (
+                    {(images.length === 0) && <p>Image Preview</p>}
+                   {images.length > 0 && (
                         <>
                             <div className='w-full h-48 md:h-64 lg:h-72 flex justify-center items-center'>
                             
-                            {productImages[ind] && productImages[ind] instanceof File && (
+                            {images[ind] && images[ind] instanceof File && (
                                 <img
-                                src={URL.createObjectURL(productImages[ind])}
+                                src={URL.createObjectURL(images[ind])}
                                 alt="Preview"
                                 className='max-w-full max-h-full object-contain bg-black rounded-xl'
                                 />
@@ -82,7 +144,7 @@ export const CreateProduct = () => {
                             <div className='flex justify-center items-center gap-2 mt-3 flex-wrap'>
                             <button type='button'
                                 onClick={() =>
-                                setind((prev) => (prev === 0 ? productImages.length - 1 : prev - 1))
+                                setind((prev) => (prev === 0 ? images.length - 1 : prev - 1))
                                 }
                                 className='bg-blue-500 text-white font-medium px-3 py-1 rounded-2xl'
                             >
@@ -91,7 +153,7 @@ export const CreateProduct = () => {
 
                             <button type='button'
                                 onClick={() => {removeImage(ind)
-                                    const newLength = productImages.length - 1;
+                                    const newLength = images.length - 1;
                                     if (newLength <= 0) return 0; 
                                     return prev >= newLength ? newLength - 1 : prev;
                                 }}
@@ -102,7 +164,7 @@ export const CreateProduct = () => {
 
                             <button type='button'
                                 onClick={() =>{
-                                setind((prev) => (prev === productImages.length - 1 ? 0 : prev + 1))
+                                setind((prev) => (prev === images.length - 1 ? 0 : prev + 1))
                                 }}
                                 className='bg-blue-500 text-white font-medium px-3 py-1 rounded-2xl'
                             >
