@@ -11,7 +11,7 @@ export const CreateProduct = () => {
     const [discription, setDiscription] = useState("");
     const [price, setPrice] = useState(-1);
     const [category, setCategory] = useState("General");
-    const [forWhom, setForWhom] = useState("Everyone");
+    const [forWhom, setForWhom] = useState("everyone");
     const [ind, setind] = useState(0);
     const [error, setError] = useState("")
     

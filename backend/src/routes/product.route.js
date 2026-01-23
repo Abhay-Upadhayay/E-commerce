@@ -14,4 +14,6 @@ router.post(
   productController.createProductController,
 );
 
+router.get("/getAllProducts" , productController.getAllProducts );
+
 module.exports = router;
